@@ -1,0 +1,16 @@
+// This script is for a multiple line command execution
+pipeline {
+    agent any
+
+    stages {
+        stage('Code Test') {
+            steps {
+                sh '''
+                echo 'Hello This is first script'
+                pwd
+                sleep 5
+                '''
+            }
+        }
+    }
+}
