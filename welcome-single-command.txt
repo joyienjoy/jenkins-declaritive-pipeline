@@ -1,0 +1,13 @@
+// This script is for a single command execution
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Code Test') {
+            steps {
+                echo 'Hello This is first script'
+            }
+        }
+    }
+}
