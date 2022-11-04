@@ -1,0 +1,58 @@
+// This script is for a multiple stage, uses parameters
+// The script is asking for permission in the last stage. If accepted, the process is allowed.
+
+
+pipeline {
+    agent any
+    environment {
+        name = 'Joydeep'
+    }
+    parameters {
+        string(name: 'person', defaultValue: 'Hornbill', description: 'favourate bird')
+        booleanParam(name: 'toggle', defaultValue: true, description: 'Toggle this value')
+        choice(name: 'selection', choices: ['Myna', 'Kite', 'falcon'], description: 'Pick your type')
+    }
+    stages {
+        stage('Code Test') {
+            environment {
+                surname = 'Sarkar'
+            }
+            steps {
+                sh '''
+                echo "Hello This is 1st script by $name $surname"
+                pwd
+                sleep 5
+                '''
+            }
+        }
+        stage('Code Retest'){
+            steps {
+                sh '''
+                echo $name
+                echo $surname
+                echo $BUILD_ID
+                pwd
+                sleep 5
+                '''
+            }
+        }
+        stage('Parameter'){
+            steps{
+                sh '''
+                echo "Are you $name: $toggle"
+                echo "Favourate Bird Name: $person"
+                echo "Favourate Bird Type: $selection"
+                '''
+            }
+        }
+        stage('Final Deploy'){
+            input {
+                message "Should I Deploy?"
+                ok "Yes we should"
+            }
+            steps{
+                echo "Project Deployed Successfully"
+            }
+        }
+    }
+}
