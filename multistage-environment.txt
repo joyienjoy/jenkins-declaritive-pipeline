@@ -1,0 +1,28 @@
+// This script is for a multiple stages and environment command execution
+pipeline {
+    agent any
+    environment {
+        name = 'Joydeep'
+    }
+    stages {
+        stage('Code Test') {
+            steps {
+                sh '''
+                echo "Hello This is 1st script by $name"
+                pwd
+                sleep 5
+                '''
+            }
+        }
+        stage('Code Retest'){
+            steps {
+                sh '''
+                echo $name
+                echo $BUILD_ID
+                pwd
+                sleep 5
+                '''
+            }
+        }
+    }
+}
