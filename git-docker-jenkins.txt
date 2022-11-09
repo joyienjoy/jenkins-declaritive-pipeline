@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    environment {
+        imagename = "joydeep2022/nodejs-tasklist-app"
+        registryCredential = 'dockerlogin'
+        dockerImage = ''
+    }
+    stages {
+        stage('Git-pull') {
+            steps {
+                git 'https://github.com/joyienjoy/nodejs-tasklist-app.git'
+            }
+        }
+        stage('Git-build'){
+            steps {
+                script {
+                    dockerImage = docker.build imagename + ":$BUILD_NUMBER"
+                }
+            }
+        }
+        stage('Git-push'){
+            steps {
+                script {
+                   docker.withRegistry( '', registryCredential ) {
+                   dockerImage.push() }
+                }
+            }
+        }
+        stage('Git-deploy'){
+            environment {
+                DOCKERRUN = 'docker run -d -p 3000:3000 --name nodeapp $imagename:$BUILD_NUMBER'
+            }
+            steps {
+                script {
+                    sshagent(['ssh-login']) {
+                       sh "ssh -o StrictHostKeyChecking=no root@10.10.0.4 ${DOCKERRUN}"
+                    }
+                }
+            }
+        }
+    }
+}
