@@ -27,14 +27,15 @@ pipeline {
             }
         }
         stage('Git-deploy'){
-            environment {
-                DOCKERRUN = 'docker run -d -p 3000:3000 --name nodeapp $imagename:$BUILD_NUMBER'
-            }
             steps {
                 script {
-                    sshagent(['ssh-login']) {
-                       sh "ssh -o StrictHostKeyChecking=no root@10.10.0.4 ${DOCKERRUN}"
-                    }
+                    def remote = [:]
+                    remote.name = 'JNode'
+                    remote.host = '20.111.50.108'
+                    remote.user = 'root'
+                    remote.password = '123'
+                    remote.allowAnyHosts = true
+                    sshCommand remote: remote, command: "docker run -d -p 3000:3000 --name nodeapp $imagename:$BUILD_NUMBER"
                 }
             }
         }
